@@ -48,15 +48,15 @@ class Segment
             $this->size / 2,
             $this->size / 2,
             $radius
-        ))->setStyle('fill', $this->backgroundColor);
+        ))->setAttribute('fill', $this->backgroundColor);
 
         if ($this->backgroundColor === 'transparent') {
             $circle
-                ->setStyle('fill-opacity', 0)
-                ->setStyle('stroke', $this->color)
-                ->setStyle('stroke-width', (string) $this->thickness)
-                ->setStyle('stroke-dashoffset', (string) $offset)
-                ->setStyle('stroke-dasharray', Butler::join([
+                ->setAttribute('fill-opacity', 0)
+                ->setAttribute('stroke', $this->color)
+                ->setAttribute('stroke-width', (string) $this->thickness)
+                ->setAttribute('stroke-dashoffset', (string) $offset)
+                ->setAttribute('stroke-dasharray', Butler::join([
                     (string) $lengthOnCircle,
                     (string) $circumference - $lengthOnCircle
                 ], ' '))
