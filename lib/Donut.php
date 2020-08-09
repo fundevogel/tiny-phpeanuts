@@ -3,8 +3,8 @@
 /**
  * tiny-phpeanuts - donut charts, easy phpeezy
  *
- * @link https://github.com/Fundevogel/pcbis2pdf
- * @license https://www.gnu.org/licenses/gpl-3.0.txt GPL v3
+ * @link https://github.com/Fundevogel/tiny-phpeanuts
+ * @license https://opensource.org/licenses/MIT MIT
  */
 
 namespace Fundevogel;
@@ -26,7 +26,7 @@ class Donut
     /**
      * Current version number of tiny-phpeanuts
      */
-    const VERSION = '0.2.0';
+    const VERSION = '0.3.0';
 
 
     /**
@@ -49,11 +49,19 @@ class Donut
 
 
     /**
-     * Spaacing between chart segments
+     * Spacing between chart segments
      *
      * @var float
      */
     private $spacing;
+
+
+    /**
+     * SVG root element classes 
+     *
+     * @var string
+     */
+    private $classes = '';
 
 
     /**
@@ -101,6 +109,16 @@ class Donut
         return $this->size;
     }
 
+    public function setClasses(string $classes)
+    {
+        $this->classes = $classes;
+    }
+
+    public function getClasses()
+    {
+        return $this->classes;
+    }
+
     public function setPieChart(bool $isPieChart)
     {
         $this->isPieChart = $isPieChart;
@@ -124,6 +142,10 @@ class Donut
 
         foreach ($segments as $segment) {
             $doc->addChild($segment->getSVGElement());
+        }
+
+        if ($this->classes !== '') {
+            $svg->setAttribute('class', $this->classes);
         }
 
         return $svg->toXMLString(false);
