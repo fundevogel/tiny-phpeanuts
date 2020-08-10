@@ -140,7 +140,6 @@ class Donut
         $svg = new SVG($this->size, $this->size);
 
         $doc = $svg->getDocument();
-        $doc->removeAttribute('xmlns:xlink');
         $doc->removeAttribute('width');
         $doc->removeAttribute('height');
         $doc->setAttribute('role', 'img');
