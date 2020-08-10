@@ -1,10 +1,11 @@
 {
     "name": "fundevogel/tiny-phpeanuts",
+    "description": "A tiny PHP library for creating SVG donut (and pie) charts.",
     "type": "library",
-    "description": "",
+    "license": "MIT",
+    "version": "0.3.1",
     "keywords": ["svg", "charts"],
     "homepage": "https://github.com/Fundevogel",
-    "license": "MIT",
     "scripts": {
         "cs-dry": "php-cs-fixer fix --dry-run --diff",
         "cs-fix": "php-cs-fixer fix",

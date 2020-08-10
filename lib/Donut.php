@@ -12,7 +12,7 @@ namespace Fundevogel;
 use Fundevogel\Segment;
 use Fundevogel\Helpers\Butler;
 
-use \SVG\SVG;
+use SVG\SVG;
 
 /**
  * Class Donut
@@ -26,7 +26,7 @@ class Donut
     /**
      * Current version number of tiny-phpeanuts
      */
-    const VERSION = '0.3.0';
+    const VERSION = '0.3.1';
 
 
     /**
@@ -57,7 +57,7 @@ class Donut
 
 
     /**
-     * SVG root element classes 
+     * SVG root element classes
      *
      * @var string
      */
@@ -138,14 +138,24 @@ class Donut
     {
         $segments = $this->constructSegments();
         $svg = new SVG($this->size, $this->size);
+
         $doc = $svg->getDocument();
+        $doc->removeAttribute('xmlns:xlink');
+        $doc->removeAttribute('width');
+        $doc->removeAttribute('height');
+        $doc->setAttribute('role', 'img');
+        $doc->setAttribute('viewBox', implode(' ', [
+            '0 0',
+            $this->size,
+            $this->size,
+        ]));
 
         foreach ($segments as $segment) {
             $doc->addChild($segment->getSVGElement());
         }
 
         if ($this->classes !== '') {
-            $svg->setAttribute('class', $this->classes);
+            $doc->setAttribute('class', $this->classes);
         }
 
         return $svg->toXMLString(false);

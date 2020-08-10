@@ -4,7 +4,7 @@ namespace Fundevogel;
 
 use Fundevogel\Helpers\Butler;
 
-use \SVG\Nodes\Shapes\SVGCircle;
+use SVG\Nodes\Shapes\SVGCircle;
 
 /**
  * Class Segment
