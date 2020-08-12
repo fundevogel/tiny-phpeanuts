@@ -9,10 +9,10 @@
 
 namespace Fundevogel;
 
-use Fundevogel\Segment;
 use Fundevogel\Helpers\Butler;
 
 use SVG\SVG;
+use SVG\Nodes\Shapes\SVGCircle;
 
 /**
  * Class Donut
@@ -26,7 +26,7 @@ class Donut
     /**
      * Current version number of tiny-phpeanuts
      */
-    const VERSION = '0.3.1';
+    const VERSION = '1.0.0';
 
 
     /**
@@ -57,6 +57,30 @@ class Donut
 
 
     /**
+     * SVG root element dimensions
+     *
+     * @var int
+     */
+    private $size = 100;
+
+
+    /**
+     * Enables viewBox instead of width & height
+     *
+     * @var bool
+     */
+    private $preferViewbox = true;
+
+
+    /**
+     * SVG root element background fill
+     *
+     * @var string
+     */
+    private $backgroundColor = 'transparent';
+
+
+    /**
      * SVG root element classes
      *
      * @var string
@@ -65,11 +89,11 @@ class Donut
 
 
     /**
-     * Viewport width & height
+     * SVG root element role attribute
      *
-     * @var int
+     * @var string
      */
-    private $size = 100;
+    private $role = 'img';
 
 
     /**
@@ -109,6 +133,26 @@ class Donut
         return $this->size;
     }
 
+    public function setPreferViewbox(bool $preferViewbox)
+    {
+        $this->preferViewbox = $preferViewbox;
+    }
+
+    public function getPreferViewbox()
+    {
+        return $this->preferViewbox;
+    }
+
+    public function setBackgroundColor(string $backgroundColor)
+    {
+        $this->backgroundColor = $backgroundColor;
+    }
+
+    public function getBackgroundColor()
+    {
+        return $this->backgroundColor;
+    }
+
     public function setClasses(string $classes)
     {
         $this->classes = $classes;
@@ -117,6 +161,16 @@ class Donut
     public function getClasses()
     {
         return $this->classes;
+    }
+
+    public function setRole(string $role)
+    {
+        $this->role = $role;
+    }
+
+    public function getRole()
+    {
+        return $this->role;
     }
 
     public function setPieChart(bool $isPieChart)
@@ -134,25 +188,38 @@ class Donut
      * Functionality
      */
 
-    public function getSVGElement(): string
+    public function render(): string
     {
-        $segments = $this->constructSegments();
         $svg = new SVG($this->size, $this->size);
-
         $doc = $svg->getDocument();
-        $doc->removeAttribute('width');
-        $doc->removeAttribute('height');
-        $doc->setAttribute('role', 'img');
-        $doc->setAttribute('viewBox', implode(' ', [
-            '0 0',
-            $this->size,
-            $this->size,
-        ]));
 
-        foreach ($segments as $segment) {
-            $doc->addChild($segment->getSVGElement());
+        # If enabled, remove replace width & height with viewBox
+        if ($this->preferViewbox) {
+            # (1) Remove width & height attribute
+            $doc->removeAttribute('width');
+            $doc->removeAttribute('height');
+
+            # (2) Add viewBox
+            $doc->setAttribute('viewBox', implode(' ', [
+                '0 0',
+                $this->size,
+                $this->size,
+            ]));
         }
 
+        # If defined, set role attribute
+        if ($this->role !== '') {
+            $doc->setAttribute('role', $this->role);
+        }
+
+        # Build segments (= SVG circle elements)
+        $segments = $this->constructSegments();
+
+        foreach ($segments as $segment) {
+            $doc->addChild($segment);
+        }
+
+        # If defined, add class(es)
         if ($this->classes !== '') {
             $doc->setAttribute('class', $this->classes);
         }
@@ -171,12 +238,11 @@ class Donut
         $segments = [];
 
         foreach ($segmentsWithSpacing as $entry) {
-            $segments[] = new Segment(
+            $segments[] = $this->constructSegment(
                 $entry['color'],
                 $entry['value'],
-                $this->size,
-                $start,
                 $thickness,
+                $start,
             );
 
             $start += $entry['value'] + $spacing;
@@ -199,5 +265,39 @@ class Donut
         }
 
         return $results;
+    }
+
+    private function constructSegment(
+        string $color,
+        float $length,
+        float $thickness,
+        float $start
+    ): \SVG\Nodes\Shapes\SVGCircle {
+        $radius = ($this->size / 2) - ($thickness / 2);
+        $circumference = $radius * 2 * M_PI;
+        $base = $circumference / 100;
+        $offset = $circumference - ($base * ($start * 100)) + ($circumference / 4);
+        $lengthOnCircle = $base * ($length * 100);
+
+        $circle = (new SVGCircle(
+            $this->size / 2,
+            $this->size / 2,
+            $radius
+        ))->setAttribute('fill', $this->backgroundColor);
+
+        if ($this->backgroundColor === 'transparent') {
+            $circle
+                ->setAttribute('fill-opacity', 0)
+                ->setAttribute('stroke', $color)
+                ->setAttribute('stroke-width', (string) $thickness)
+                ->setAttribute('stroke-dashoffset', (string) $offset)
+                ->setAttribute('stroke-dasharray', Butler::join([
+                    (string) $lengthOnCircle,
+                    (string) $circumference - $lengthOnCircle
+                ], ' '))
+            ;
+        }
+
+        return $circle;
     }
 }

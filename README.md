@@ -27,26 +27,26 @@ composer require fundevogel/tiny-phpeanuts
 
 
 ### Configuration
-The `Donut` class takes three arguments:
+The `Donut` class takes three parameters:
+
+| Parameter     | Type   | Default   | Description                  |
+| ------------- | ------ | --------- | ---------------------------- |
+| `$entries`    | array  | -         | data to be visualized        |
+| `$thickness`  | float  | see below | thickness of the chart       |
+| `$spacing`    | float  | see below | spacing between the segments |
 
 
-#### `$entries`
-`array`, holds two or more arrays, each of which consists of `color` (string) and `value` (float)
+### Options
+.. and there's even more! Check out these 'global' options:
 
-```php
-$entries = [
-    ['color' => '#4F5D95', 'value' => 0.6],
-    ['color' => '#2b7489', 'value' => 0.4],
-];
-```
-
-
-#### `$thickness`
-`float`, defines thickness of the chart (default `3`)
-
-
-#### `$spacing`
-`float`, defines thickness of the chart (default `0.005`)
+| Setter               | Type   | Default         | Description                |
+| -------------------- | ------ | --------------- | -------------------------- |
+| `setSize`            | int    | `100`           | dimensions of chart        |
+| `setBackgroundColor` | string | `'transparent'` | background fill color      |
+| `setPreferViewbox`   | bool   | `true`          | `viewBox` > width & height |
+| `setClasses`         | string | `''`            | classes applied to chart   |
+| `setRole`            | string | `'img'`         | role attribute             |
+| `setPieChart`        | bool   | `false`         | make it a pie chart        |
 
 
 ### Example
@@ -71,7 +71,7 @@ $donut = new Donut(
 $donut->setPieChart(true);
 
 // Render its markup
-$svg = $donut->getSVGElement();
+$svg = $donut->render();
 
 # Save it to disk ..
 # (1) .. using the XML DOM parser
@@ -97,12 +97,6 @@ file_put_contents('dist/chart_file-put-contents.svg', $svg);
 ![Donut Chart, powered by tiny-phpeanuts](./chart2.svg)
 
 
-# Modifications
-Only two modifications have been made compared to `tiny-donuts`:
-- being a pie chart isn't determined by using `'pie'` as input for `$thickness`, but by using `setPieChart`
-- the chart's `fill-opacity` is set to `0` for complete transparency in case of subsequent PNG export
-
-
 ## FAQ
 > Will there be more charts in the future?
 
@@ -115,12 +109,12 @@ Yes! If you are looking for something more serious, have a look at [easychart](h
 
 ## Roadmap
 - [ ] Add tests
-- [ ] Table view for options
-- [ ] Optimizing code
+- [x] Table view for options
+- [x] Optimizing code
 
 
 ## Credits
-Naturally, a big shoutout goes to [Kim Almasan](https://github.com/Narquadah) & [Lars Krumbier](), who created `tiny-donuts` for [Verivox GmbH](https://github.com/Verivox). Most of the helper functions were taken from [Kirby](https://getkirby.com) by [Bastian Allgeier](https://github.com/bastianallgeier) (who's just awesome, btw).
+This project is based on the TypeScript library `tiny-donuts` by [Kim Almasan](https://github.com/Narquadah) & [Lars Krumbier](https://github.com/LarsKumbier). The helper functions (see `lib/helpers`) were taken from [Kirby](https://getkirby.com) by [Bastian Allgeier](https://github.com/bastianallgeier) (both the project and its founder are just awesome, btw).
 
 
 **Happy coding!**
