@@ -92,6 +92,11 @@ file_put_contents('dist/chart_file-put-contents.svg', $svg);
 
 ![Donut Chart, powered by tiny-phpeanuts](./chart.svg)
 
+.. and with `setPieChart(true)`:
+
+![Donut Chart, powered by tiny-phpeanuts](./chart2.svg)
+
+
 # Modifications
 Only two modifications have been made compared to `tiny-donuts`:
 - being a pie chart isn't determined by using `'pie'` as input for `$thickness`, but by using `setPieChart`
