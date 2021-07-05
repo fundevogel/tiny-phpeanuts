@@ -26,7 +26,7 @@ class Donut
     /**
      * Current version number of tiny-phpeanuts
      */
-    const VERSION = '1.0.0';
+    const VERSION = '1.0.1';
 
 
     /**
@@ -242,7 +242,7 @@ class Donut
                 $entry['color'],
                 $entry['value'],
                 $thickness,
-                $start,
+                $start
             );
 
             $start += $entry['value'] + $spacing;
