@@ -11,29 +11,27 @@ namespace Fundevogel;
 
 use Fundevogel\Helpers\Butler;
 
-use SVG\SVG;
-use SVG\Nodes\Shapes\SVGCircle;
 
 /**
  * Class Donut
  *
- * Creates a donut chart
+ * Creates a {donut,pie} chart
  *
  * @package tiny-phpeanuts
  */
 class Donut
 {
     /**
-     * Current version number of tiny-phpeanuts
+     * Current version
      */
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.2';
 
 
     /**
      * Data points being visualized
-     * Each entry consists of
-     * - a color string
-     * - a value representing the share (between 0 and 1)
+     * Each entry (= array) consists of two key-value pairs
+     * - `color` => string
+     * - `value` => float (between 0 and 1)
      *
      * @var array
      */
@@ -104,6 +102,14 @@ class Donut
     private $isPieChart = false;
 
 
+    /**
+     * Constructor
+     *
+     * @param array $entries Array with data points to be rendered
+     * @param float $thickness Chart thickness (ignored when enabling `pieChart`)
+     * @param float $spacing Spacing between segments (= donut elements)
+     * @return void
+     */
     public function __construct(
         array $entries,
         float $thickness = 3,
@@ -128,7 +134,7 @@ class Donut
         $this->size = $size;
     }
 
-    public function getSize()
+    public function getSize(): int
     {
         return $this->size;
     }
@@ -138,7 +144,7 @@ class Donut
         $this->preferViewbox = $preferViewbox;
     }
 
-    public function getPreferViewbox()
+    public function getPreferViewbox(): bool
     {
         return $this->preferViewbox;
     }
@@ -148,7 +154,7 @@ class Donut
         $this->backgroundColor = $backgroundColor;
     }
 
-    public function getBackgroundColor()
+    public function getBackgroundColor(): string
     {
         return $this->backgroundColor;
     }
@@ -158,7 +164,7 @@ class Donut
         $this->classes = $classes;
     }
 
-    public function getClasses()
+    public function getClasses(): string
     {
         return $this->classes;
     }
@@ -168,7 +174,7 @@ class Donut
         $this->role = $role;
     }
 
-    public function getRole()
+    public function getRole(): string
     {
         return $this->role;
     }
@@ -178,19 +184,24 @@ class Donut
         $this->isPieChart = $isPieChart;
     }
 
-    public function getPieChart()
+    public function getPieChart(): bool
     {
         return $this->isPieChart;
     }
 
 
     /**
-     * Functionality
+     * Methods
      */
 
+    /**
+     * Renders SVG chart
+     *
+     * @return string SVG chart as string
+     */
     public function render(): string
     {
-        $svg = new SVG($this->size, $this->size);
+        $svg = new \SVG\SVG($this->size, $this->size);
         $doc = $svg->getDocument();
 
         # If enabled, remove replace width & height with viewBox
@@ -227,6 +238,12 @@ class Donut
         return $svg->toXMLString(false);
     }
 
+
+    /**
+     * Initiates construction of segments
+     *
+     * @return array
+     */
     private function constructSegments(): array
     {
         $thickness = $this->isPieChart ? $this->size / 2 : $this->thickness;
@@ -251,6 +268,15 @@ class Donut
         return $segments;
     }
 
+
+    /**
+     * Corrects segments according to spacing
+     *
+     * @param array $segments Build instructions for segments
+     * @param float $spacing Spacing between segments
+     *
+     * @return array Constructed segments
+     */
     private function correctSegmentsForSpacing(array $segments, float $spacing): array
     {
         $totalLengthWithoutSpacing = 1 - $spacing * count($segments);
@@ -267,6 +293,17 @@ class Donut
         return $results;
     }
 
+
+    /**
+     * Constructs single segment
+     *
+     * @param string $color Segment color
+     * @param float $length Segment value
+     * @param float $thickness Chart thickness
+     * @param float $start Segment starting position
+     *
+     * @return \SVG\Nodes\Shapes\SVGCircle
+     */
     private function constructSegment(
         string $color,
         float $length,
@@ -279,7 +316,7 @@ class Donut
         $offset = $circumference - ($base * ($start * 100)) + ($circumference / 4);
         $lengthOnCircle = $base * ($length * 100);
 
-        $circle = (new SVGCircle(
+        $circle = (new \SVG\Nodes\Shapes\SVGCircle(
             $this->size / 2,
             $this->size / 2,
             $radius

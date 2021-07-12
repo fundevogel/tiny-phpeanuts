@@ -2,15 +2,15 @@
 
 namespace Fundevogel\Helpers;
 
+
 /**
  * Class Butler
  *
  * This class contains useful helper functions, pretty much like a butler
  * Powered by https://getkirby.com
  *
- * @package PHPCBIS
+ * @package tiny-phpeanuts
  */
-
 class Butler
 {
     /**
