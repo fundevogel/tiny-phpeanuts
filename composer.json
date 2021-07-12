@@ -3,7 +3,7 @@
     "description": "A tiny PHP library for creating SVG donut (and pie) charts.",
     "type": "library",
     "license": "MIT",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "keywords": ["svg", "charts"],
     "homepage": "https://github.com/Fundevogel",
     "scripts": {
